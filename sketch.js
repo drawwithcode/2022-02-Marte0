@@ -5,21 +5,25 @@ function setup() {
   background(0);
 }
 
+function mouseClicked() {
+  console.log("click");
+  createFirework(mouseX, mouseY, 2);
+  createFirework(mouseX, mouseY, 2);
+  createFirework(mouseX, mouseY, 2);
+}
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+  background(0);
+}
+
 function draw() {
-  background(0, 35);
-  if (frameCount % 3 == 0) {
+  background(0, 20);
+  if (frameCount % 10 == 0) {
     let fireworkX = random(0 + 100, windowWidth - 100);
     let fireworkY = random(0 + 100, windowHeight - 100);
-    let fireworkColor = color(
-      random(80, 255),
-      random(80, 255),
-      random(80, 255)
-    );
 
-    for (let i = 0; i < random(100, 1000); i++) {
-      let p = new Particle(fireworkX, fireworkY, fireworkColor);
-      particles.push(p);
-    }
+    createFirework(fireworkX, fireworkY);
+    createFirework(fireworkX, fireworkY);
   }
   particles.forEach(function (p, index) {
     p.update();
@@ -30,18 +34,19 @@ function draw() {
 }
 
 class Particle {
-  constructor(x, y, color) {
+  constructor(x, y, color, increase) {
     this.x = x; //= windowWidth / 2;
     this.y = y; //= windowHeight / 2;
-    this.vx = random(-3, +3);
-    this.vy = random(-3, +3);
+    this.vx = random(-3, +3) * increase;
+    this.vy = random(-3, +3) * increase;
     this.alpha = 255;
     this.color = color;
-    this.fade = random(3, 4);
+    this.fade = random(2, 4) / increase;
+    this.weight = random(1, 5) * increase;
   }
 
   show() {
-    strokeWeight(3);
+    strokeWeight(this.weight);
     this.color.setAlpha(this.alpha);
     stroke(this.color);
 
@@ -60,5 +65,14 @@ class Particle {
 
     this.y += this.vy;
     this.alpha -= this.fade;
+  }
+}
+
+function createFirework(fireworkX, fireworkY, increase = 1) {
+  let fireworkColor = color(random(80, 255), random(80, 255), random(80, 255));
+
+  for (let i = 0; i < random(100, 1000); i++) {
+    let p = new Particle(fireworkX, fireworkY, fireworkColor, increase);
+    particles.push(p);
   }
 }
